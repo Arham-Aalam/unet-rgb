@@ -11,7 +11,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 
 class myUnet(object):
-    def __init__(self, img_rows=512, img_cols=512, classes_num = 5):
+    def __init__(self, img_rows=512, img_cols=512, classes_num = 12):
         self.img_rows = img_rows
         self.img_cols = img_cols
         self.classes_num = classes_num
@@ -58,7 +58,7 @@ class myUnet(object):
 
         up6 = Conv2D(512, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
             UpSampling2D(size=(2, 2))(drop5))
-        merge6 = merge([drop4, up6], mode='concat', concat_axis=3)
+        merge6 = Concatenate([drop4, up6])
         print(up6)
         print(merge6)
         conv6 = Conv2D(512, 3, activation='relu', padding='same', kernel_initializer='he_normal')(merge6)
@@ -67,7 +67,7 @@ class myUnet(object):
         print(conv6)
         up7 = Conv2D(256, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
             UpSampling2D(size=(2, 2))(conv6))
-        merge7 = merge([conv3, up7], mode='concat', concat_axis=3)
+        merge7 = Concatenate([conv3, up7])
         print(up7)
         print(merge7)
         conv7 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(merge7)
@@ -76,13 +76,13 @@ class myUnet(object):
         print(conv7)
         up8 = Conv2D(128, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
             UpSampling2D(size=(2, 2))(conv7))
-        merge8 = merge([conv2, up8], mode='concat', concat_axis=3)
+        merge8 = Concatenate([conv2, up8])
         conv8 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(merge8)
         conv8 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv8)
 
         up9 = Conv2D(64, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
             UpSampling2D(size=(2, 2))(conv8))
-        merge9 = merge([conv1, up9], mode='concat', concat_axis=3)
+        merge9 = Concatenate([conv1, up9])
         print(up9)
         print(merge9)
         conv9 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(merge9)

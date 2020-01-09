@@ -8,7 +8,7 @@ import glob
 class dataProcess(object):
     def __init__(self, out_rows, out_cols, train_path="CamVid/train", train_label="CamVid/trainannot",
                  val_path="CamVid/val", val_label="CamVid/valannot",
-                 test_path="CamVid/test", test_label='CamVid/testannot', npy_path="./npydata", img_type="png"):
+                 test_path="CamVid/test", test_label='CamVid/testannot', npy_path="./npydata", img_type="png", classes_num=12):
         self.out_rows = out_rows
         self.out_cols = out_cols
         self.train_path = train_path
@@ -19,11 +19,12 @@ class dataProcess(object):
         self.test_path = test_path
         self.test_label = test_label
         self.npy_path = npy_path
+        self.classes_num = classes_num
 
         print(self.train_path, self.train_label)
 
     def label2class(self, label):
-        x = np.zeros([self.out_rows, self.out_cols, 12])
+        x = np.zeros([self.out_rows, self.out_cols, self.classes_num])
         for i in range(self.out_rows):
             for j in range(self.out_cols):
                 x[i, j, int(label[i][j])] = 1  # 属于第m类，第三维m处值为1
@@ -40,7 +41,7 @@ class dataProcess(object):
         labels1 = sorted(glob.glob(self.test_label + "/*." + self.img_type))
         labels = labels0 + labels1
         imgdatas = np.ndarray((len(imgs), self.out_rows, self.out_cols, 3), dtype=np.uint8)
-        imglabels = np.ndarray((len(labels), self.out_rows, self.out_cols, 12), dtype=np.uint8)
+        imglabels = np.ndarray((len(labels), self.out_rows, self.out_cols, self.classes_nums), dtype=np.uint8)
         print(len(imgs), len(labels))
 
         for x in range(len(imgs)):
