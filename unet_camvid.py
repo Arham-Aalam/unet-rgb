@@ -11,9 +11,10 @@ from keras.preprocessing.image import ImageDataGenerator
 
 
 class myUnet(object):
-    def __init__(self, img_rows=512, img_cols=512):
+    def __init__(self, img_rows=512, img_cols=512, classes_num = 5):
         self.img_rows = img_rows
         self.img_cols = img_cols
+        self.classes_num = classes_num
 
     def load_data(self):
         mydata = dataProcess(self.img_rows, self.img_cols)
@@ -26,25 +27,25 @@ class myUnet(object):
 
         conv1 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(inputs)
         # print(conv1)
-        print "conv1 shape:", conv1.shape
+        print ("conv1 shape:", conv1.shape)
         conv1 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv1)
-        print "conv1 shape:", conv1.shape
+        print ("conv1 shape:", conv1.shape)
         pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
-        print "pool1 shape:", pool1.shape
+        print ("pool1 shape:", pool1.shape)
 
         conv2 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(pool1)
-        print "conv2 shape:", conv2.shape
+        print ("conv2 shape:", conv2.shape)
         conv2 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv2)
-        print "conv2 shape:", conv2.shape
+        print ("conv2 shape:", conv2.shape)
         pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
-        print "pool2 shape:", pool2.shape
+        print ("pool2 shape:", pool2.shape)
 
         conv3 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(pool2)
-        print "conv3 shape:", conv3.shape
+        print ("conv3 shape:", conv3.shape)
         conv3 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv3)
-        print "conv3 shape:", conv3.shape
+        print ("conv3 shape:", conv3.shape)
         pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
-        print "pool3 shape:", pool3.shape
+        print ("pool3 shape:", pool3.shape)
 
         conv4 = Conv2D(512, 3, activation='relu', padding='same', kernel_initializer='he_normal')(pool3)
         conv4 = Conv2D(512, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv4)
@@ -88,10 +89,10 @@ class myUnet(object):
         print(conv9)
         conv9 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv9)
         print(conv9)
-        conv9 = Conv2D(12, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv9)
-        print "conv9 shape:", conv9.shape
+        conv9 = Conv2D(self.classes_num, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv9)
+        print ("conv9 shape:", conv9.shape)
 
-        conv10 = Conv2D(12, 1, activation='softmax')(conv9)
+        conv10 = Conv2D(self.classes_num, 1, activation='softmax')(conv9)
         print(conv10)
         model = Model(input=inputs, output=conv10)
 

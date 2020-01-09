@@ -20,6 +20,8 @@ class dataProcess(object):
         self.test_label = test_label
         self.npy_path = npy_path
 
+        print(self.train_path, self.train_label)
+
     def label2class(self, label):
         x = np.zeros([self.out_rows, self.out_cols, 12])
         for i in range(self.out_rows):
@@ -33,6 +35,7 @@ class dataProcess(object):
         imgs0 = sorted(glob.glob(self.train_path+"/*."+self.img_type))
         imgs1 = sorted(glob.glob(self.test_path+"/*."+self.img_type))
         imgs = imgs0 + imgs1
+        print( imgs0 , imgs1,imgs)
         labels0 = sorted(glob.glob(self.train_label+"/*."+self.img_type))
         labels1 = sorted(glob.glob(self.test_label + "/*." + self.img_type))
         labels = labels0 + labels1
