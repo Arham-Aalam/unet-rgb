@@ -20,6 +20,7 @@ class dataProcess(object):
         i = 0
         print('Creating training images...')
         imgs = glob.glob(self.data_path+"/*."+self.img_type)
+        print(self.out_rows, self.out_cols)
         imgdatas = np.ndarray((len(imgs), self.out_rows, self.out_cols, 3), dtype=np.uint8)
         imglabels = np.ndarray((len(imgs), self.out_rows, self.out_cols, 1), dtype=np.uint8)
 
@@ -27,8 +28,8 @@ class dataProcess(object):
             imgpath = imgs[x]
             pic_name = imgpath.split('/')[-1]
             labelpath = self.label_path + '/' + pic_name
-            img = load_img(imgpath, grayscale=False, target_size=[512, 512])
-            label = load_img(labelpath, grayscale=True, target_size=[512, 512])
+            img = load_img(imgpath, grayscale=False, target_size=[800, 800])
+            label = load_img(labelpath, grayscale=True, target_size=[800, 800])
             img = img_to_array(img)
             label = img_to_array(label)
             imgdatas[i] = img
@@ -52,7 +53,7 @@ class dataProcess(object):
         for imgname in imgs:
             testpath = imgname
             testpathlist.append(testpath)
-            img = load_img(testpath, grayscale=False, target_size=[512, 512])
+            img = load_img(testpath, grayscale=False, target_size=[800, 800])
             img = img_to_array(img)
             imgdatas[i] = img
             i += 1
@@ -89,6 +90,6 @@ class dataProcess(object):
 
 
 if __name__ == "__main__":
-    mydata = dataProcess(512, 512)
+    mydata = dataProcess(800, 800)
     mydata.create_train_data()
     mydata.create_test_data()

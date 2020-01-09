@@ -6,6 +6,8 @@ from keras.optimizers import *
 from keras.callbacks import ModelCheckpoint
 import cv2
 from data_camvid import *
+from sklearn.model_selection import train_test_split
+from keras.preprocessing.image import ImageDataGenerator
 
 
 class myUnet(object):
@@ -105,8 +107,15 @@ class myUnet(object):
         print("got unet")
         model_checkpoint = ModelCheckpoint('unet_camvid.hdf5', monitor='loss', verbose=1, save_best_only=True)
         print('Fitting model...')
-        model.fit(imgs_train, imgs_mask_train, batch_size=1, epochs=50, verbose=1,
-                  validation_split=0.1, shuffle=True, callbacks=[model_checkpoint])
+        # Split the data
+        x_train, x_valid, y_train, y_valid = train_test_split(imgs_train, imgs_mask_train, test_size=0.2, shuffle= True)
+        aug = ImageDataGenerator(rotation_range=20, zoom_range=0.15,
+            width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15,
+            horizontal_flip=True, fill_mode="nearest")
+        
+        model.fit_generator(aug.flow(x_train, y_train, batch_size=4),
+            validation_data=(x_valid, y_valid), steps_per_epoch=len(imgs_train)//4,
+            epochs=100, callbacks=[model_checkpoint])
 
         print('predict test data')
         imgs_mask_test = model.predict(imgs_test, batch_size=1, verbose=1)
