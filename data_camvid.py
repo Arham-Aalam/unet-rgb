@@ -25,9 +25,14 @@ class dataProcess(object):
 
     def label2class(self, label):
         x = np.zeros([self.out_rows, self.out_cols, self.classes_num])
+        print(label.shape, x.shape)
         for i in range(self.out_rows):
             for j in range(self.out_cols):
-                x[i, j, int(label[i][j])] = 1  # 属于第m类，第三维m处值为1
+                try:
+                    x[i, j, int(label[i][j])] = 1  # 属于第m类，第三维m处值为1
+                except Exception as e:
+                    print(e)
+                    print(i, j, int(label[i][j]))
         return x
 
     def create_train_data(self):
@@ -41,14 +46,14 @@ class dataProcess(object):
         labels1 = sorted(glob.glob(self.test_label + "/*." + self.img_type))
         labels = labels0 + labels1
         imgdatas = np.ndarray((len(imgs), self.out_rows, self.out_cols, 3), dtype=np.uint8)
-        imglabels = np.ndarray((len(labels), self.out_rows, self.out_cols, self.classes_nums), dtype=np.uint8)
+        imglabels = np.ndarray((len(labels), self.out_rows, self.out_cols, self.classes_num), dtype=np.uint8)
         print(len(imgs), len(labels))
 
         for x in range(len(imgs)):
             imgpath = imgs[x]
             labelpath = labels[x]
-            img = load_img(imgpath, grayscale=False, target_size=[self.out_cols,self.out_rows])
-            label = load_img(labelpath, grayscale=True, target_size=[self.out_cols,self.out_rows])
+            img = load_img(imgpath, target_size=[self.out_cols,self.out_rows])
+            label = load_img(labelpath, color_mode='grayscale', target_size=[self.out_cols,self.out_rows])
             img = img_to_array(img)
             label = self.label2class(img_to_array(label))
             imgdatas[i] = img
