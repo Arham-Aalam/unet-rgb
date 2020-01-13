@@ -3,6 +3,7 @@
 from keras.preprocessing.image import img_to_array, load_img
 import numpy as np
 import glob
+import cv2
 
 
 class dataProcess(object):
@@ -29,7 +30,7 @@ class dataProcess(object):
         for i in range(self.out_rows):
             for j in range(self.out_cols):
                 try:
-                    x[i, j, int(label[i][j])] = 1  # 属于第m类，第三维m处值为1
+                    x[i, j, int(label[i][j])-1] = 255  # 属于第m类，第三维m处值为1
                 except Exception as e:
                     print(e)
                     print(i, j, int(label[i][j]))
@@ -52,10 +53,12 @@ class dataProcess(object):
         for x in range(len(imgs)):
             imgpath = imgs[x]
             labelpath = labels[x]
-            img = load_img(imgpath, target_size=[self.out_cols,self.out_rows])
-            label = load_img(labelpath, color_mode='grayscale', target_size=[self.out_cols,self.out_rows])
-            img = img_to_array(img)
-            label = self.label2class(img_to_array(label))
+            #img = load_img(imgpath, target_size=[self.out_cols,self.out_rows])
+            img = cv2.imread(imgpath)
+            # label = load_img(labelpath, color_mode='grayscale', target_size=[self.out_cols,self.out_rows])
+            # img = img_to_array(img)
+            label = cv2.imread(labelpath, cv2.IMREAD_GRAYSCALE)
+            label = self.label2class(label)
             imgdatas[i] = img
             imglabels[i] = label
             if i % 100 == 0:
